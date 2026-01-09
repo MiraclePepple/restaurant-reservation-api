@@ -61,4 +61,33 @@ router.get('/:restaurantId', (req, res, next) => {
   }
 });
 
+router.get('/:restaurantId/reservations', (req, res, next) => {
+  try {
+    const { restaurantId } = req.params;
+    const { date } = req.query;
+
+    if (!date) {
+      return res.status(400).json({ error: 'Date query parameter is required (YYYY-MM-DD)' });
+    }
+
+    // Check restaurant exists
+    const restaurant = db.prepare('SELECT * FROM restaurants WHERE id = ?').get(restaurantId);
+    if (!restaurant) return res.status(404).json({ error: 'Restaurant not found' });
+
+    // Fetch reservations for that restaurant on the given date
+    const reservations = db
+      .prepare(
+        `SELECT * FROM reservations 
+         WHERE restaurantId = ? 
+         AND DATE(dateTime) = ?`
+      )
+      .all(restaurantId, date);
+
+    res.json({ restaurantId, date, reservations });
+  } catch (err) {
+    next(err);
+  }
+});
+
+
 export default router;

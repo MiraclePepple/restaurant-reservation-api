@@ -1,9 +1,9 @@
 import Database from 'better-sqlite3';
 
-const db = new Database(':memory:'); // For demo, in-memory db. Use file for persistence.
+const db = new Database('database.sqlite');
 
 db.exec(`
-  CREATE TABLE restaurants (
+  CREATE TABLE IF NOT EXISTS restaurants (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     openingTime TEXT NOT NULL,
@@ -11,7 +11,7 @@ db.exec(`
     totalTables INTEGER NOT NULL
   );
 
-  CREATE TABLE tables (
+  CREATE TABLE IF NOT EXISTS tables (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     restaurantId INTEGER NOT NULL,
     tableNumber INTEGER NOT NULL,
@@ -19,7 +19,7 @@ db.exec(`
     FOREIGN KEY(restaurantId) REFERENCES restaurants(id)
   );
 
-  CREATE TABLE reservations (
+  CREATE TABLE IF NOT EXISTS reservations (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     tableId INTEGER NOT NULL,
     restaurantId INTEGER NOT NULL,
@@ -33,5 +33,6 @@ db.exec(`
     FOREIGN KEY(restaurantId) REFERENCES restaurants(id)
   );
 `);
+
 
 export default db;

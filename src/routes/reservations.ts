@@ -25,7 +25,6 @@ router.post(
         return res.status(400).json({ error })
       }
 
-      //Destructure body (THIS was missing)
       const {
         restaurantId,
         customerName,
@@ -65,7 +64,7 @@ router.post(
           .json({ error: 'Reservation outside operating hours' })
       }
 
-      // 5️⃣ Find tables that can fit the party
+      //Find tables that can fit the party
       const tables = db
         .prepare(
           `SELECT id, tableNumber, capacity 
@@ -80,7 +79,7 @@ router.post(
           .json({ error: 'No table can accommodate this party size' })
       }
 
-      // 6️⃣ Find available table (no overlap)
+      //Find available table (no overlap)
       let selectedTable: Table | null = null
 
       for (const table of tables) {
@@ -107,7 +106,7 @@ router.post(
           .json({ error: 'No available table for this time slot' })
       }
 
-      // 7️⃣ Insert reservation
+      // Insert reservation
       const result = db
         .prepare(
           `
