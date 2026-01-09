@@ -6,29 +6,26 @@ import { isWithinOperatingHours } from '../utils'
 
 const router = express.Router()
 
-// -----------------------------
-// TYPES (local, simple, clear)
-// -----------------------------
+// TYPES
 type Table = {
   id: number
   tableNumber: number
   capacity: number
 }
 
-// -----------------------------
 // ROUTE: Create Reservation
-// -----------------------------
+
 router.post(
   '/',
   (req: Request, res: Response, next: NextFunction) => {
     try {
-      // 1️⃣ Validate payload
+      //Validate payload
       const error = validateReservationPayload(req.body)
       if (error) {
         return res.status(400).json({ error })
       }
 
-      // 2️⃣ Destructure body (THIS was missing)
+      //Destructure body (THIS was missing)
       const {
         restaurantId,
         customerName,
@@ -38,7 +35,7 @@ router.post(
         duration
       } = req.body
 
-      // 3️⃣ Fetch restaurant
+      //Fetch restaurant
       const restaurant = db
         .prepare('SELECT * FROM restaurants WHERE id = ?')
         .get(restaurantId) as {
@@ -51,7 +48,7 @@ router.post(
         return res.status(404).json({ error: 'Restaurant not found' })
       }
 
-      // 4️⃣ Time calculations
+      // Time calculations
       const startTime = parseISO(dateTime)
       const endTime = addMinutes(startTime, duration)
 

@@ -54,7 +54,7 @@ router.get('/:restaurantId', (req, res, next) => {
 
     const tables = db.prepare('SELECT * FROM tables WHERE restaurantId = ?').all(restaurantId);
 
-    // Note: availability requires reservation data + business logic, skip here for brevity
+
     res.json({ ...restaurant, tables });
   } catch (err) {
     next(err);
