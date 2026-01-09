@@ -54,7 +54,6 @@ router.get('/:restaurantId', (req, res, next) => {
 
     const tables = db.prepare('SELECT * FROM tables WHERE restaurantId = ?').all(restaurantId);
 
-
     res.json({ ...restaurant, tables });
   } catch (err) {
     next(err);
@@ -74,12 +73,12 @@ router.get('/:restaurantId/reservations', (req, res, next) => {
     const restaurant = db.prepare('SELECT * FROM restaurants WHERE id = ?').get(restaurantId);
     if (!restaurant) return res.status(404).json({ error: 'Restaurant not found' });
 
-    // Fetch reservations for that restaurant on the given date
+    // Fetch reservations for that restaurant on the given date using startTime instead of dateTime
     const reservations = db
       .prepare(
         `SELECT * FROM reservations 
          WHERE restaurantId = ? 
-         AND DATE(dateTime) = ?`
+         AND DATE(startTime) = ?`
       )
       .all(restaurantId, date);
 
@@ -88,6 +87,5 @@ router.get('/:restaurantId/reservations', (req, res, next) => {
     next(err);
   }
 });
-
 
 export default router;
